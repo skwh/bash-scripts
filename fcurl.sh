@@ -1,11 +1,14 @@
 TIME=$1 #time in seconds to sleep
-INC=$(awk "BEGIN {print $TIME/100}") #1 percent increment
+INC=$(echo "scale=3;$TIME/100" | bc) #1 percent increment
+TIME=$(echo "scale=3;$TIME.0" | bc) #convert time to a decimal
 CUR=0
-while [[ $CUR != $TIME ]]; do
+while [[ $CUR!=$TIME ]]; do
   clear
   PER=$(awk "BEGIN {print ($CUR/$TIME)*100}")
   echo "Compiling, $PER%..."
-  CUR=$[$CUR + $INC]
+  echo "TEST: CUR=$CUR"
+  echo "TEST: TIME=$TIME"
+  CUR=$(echo "scale=3;$CUR+$INC" | bc)
   sleep $INC
 done
 # This script displays a "Compiling" percentage for a given amount of time.
